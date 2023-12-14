@@ -478,6 +478,7 @@ func (nm *numericalMedian) shouldReport(ctx context.Context, repts types.ReportT
 			resultTransmissionDetails.latestTimestamp,
 			resultTransmissionDetails.err =
 			nm.contractTransmitter.LatestTransmissionDetails(ctx)
+		nm.logger.Info(fmt.Sprintf("!!!!!!!!\nLatestTransmissionDetails\n!!!!!!!!\n%v", resultTransmissionDetails), commontypes.LogFields{})
 	})
 	subs.Go(func() {
 		resultRoundRequested.configDigest,
@@ -485,6 +486,7 @@ func (nm *numericalMedian) shouldReport(ctx context.Context, repts types.ReportT
 			resultRoundRequested.round,
 			resultRoundRequested.err =
 			nm.contractTransmitter.LatestRoundRequested(ctx, nm.offchainConfig.DeltaC)
+		nm.logger.Info(fmt.Sprintf("!!!!!!!!\nLatestRoundRequested\n!!!!!!!!\n%v", resultRoundRequested), commontypes.LogFields{})
 	})
 	subs.Wait()
 
@@ -583,6 +585,7 @@ func (nm *numericalMedian) ShouldAcceptFinalizedReport(ctx context.Context, rept
 	}
 
 	contractConfigDigest, contractEpoch, contractRound, _, _, err := nm.contractTransmitter.LatestTransmissionDetails(ctx)
+	nm.logger.Info(fmt.Sprintf("!!!!!!!!\nLatestTransmissionDetails parts: %v\n%v\n%v\n%v\n!!!!!!!!", contractConfigDigest, contractEpoch, contractRound, err), commontypes.LogFields{})
 	if err != nil {
 		return false, err
 	}
@@ -646,6 +649,7 @@ func (nm *numericalMedian) ShouldTransmitAcceptedReport(ctx context.Context, rep
 	reportEpochRound := epochRound{repts.Epoch, repts.Round}
 
 	contractConfigDigest, contractEpoch, contractRound, _, _, err := nm.contractTransmitter.LatestTransmissionDetails(ctx)
+	nm.logger.Info(fmt.Sprintf("!!!!!!!!\nLatestTransmissionDetails parts: %v\n%v\n%v\n%v\n!!!!!!!!", contractConfigDigest, contractEpoch, contractRound, err), commontypes.LogFields{})
 	if err != nil {
 		return false, err
 	}
