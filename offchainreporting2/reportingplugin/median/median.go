@@ -457,7 +457,8 @@ func (nm *numericalMedian) Report(ctx context.Context, repts types.ReportTimesta
 	})
 	report, err := nm.reportCodec.BuildReport(paos)
 	nm.logger.Info("!!!!!!!!\nBuildReport result\n!!!!!!!!", commontypes.LogFields{
-		"report": fmt.Sprintf("%x", report),
+		"report":    fmt.Sprintf("%x", report),
+		"codecType": fmt.Sprintf("%T", nm.reportCodec),
 	})
 	if err != nil {
 		return false, nil, err
