@@ -438,7 +438,27 @@ func (nm *numericalMedian) Report(ctx context.Context, repts types.ReportTimesta
 	if !should {
 		return false, nil, nil
 	}
+	ts := make([]uint32, len(paos))
+	values := make([]string, len(paos))
+	juelsPerFeeCoins := make([]string, len(paos))
+	observers := make([]commontypes.OracleID, len(paos))
+
+	for _, pao := range paos {
+		ts = append(ts, pao.Timestamp)
+		values = append(values, pao.Value.String())
+		juelsPerFeeCoins = append(juelsPerFeeCoins, pao.JuelsPerFeeCoin.String())
+		observers = append(observers, pao.Observer)
+	}
+	nm.logger.Info("!!!!!!!!\nBuildReport call\n!!!!!!!!", commontypes.LogFields{
+		"ts":               ts,
+		"values":           values,
+		"juelsPerFeeCoins": juelsPerFeeCoins,
+		"observers":        observers,
+	})
 	report, err := nm.reportCodec.BuildReport(paos)
+	nm.logger.Info("!!!!!!!!\nBuildReport result\n!!!!!!!!", commontypes.LogFields{
+		"report": fmt.Sprintf("%x", report),
+	})
 	if err != nil {
 		return false, nil, err
 	}
@@ -637,6 +657,9 @@ func (nm *numericalMedian) ShouldAcceptFinalizedReport(ctx context.Context, rept
 	}
 
 	reportMedian, err := nm.reportCodec.MedianFromReport(report)
+	nm.logger.Info("!!!!!!!!\nMedianFromReport\n!!!!!!!!\n", commontypes.LogFields{
+		"median": reportMedian.String(),
+	})
 	if err != nil {
 		return false, fmt.Errorf("error during MedianFromReport: %w", err)
 	}
